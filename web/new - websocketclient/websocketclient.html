@@ -1,189 +1,214 @@
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=gb2312">
-    <title>Web sockets test</title>
- <style type="text/css">
-     .container
-     {
-         font-family: "Courier New";
-         width: 680px;
-         height: 300px;
-         overflow: auto;
-         border: 1px solid black;
-     }
+<meta http-equiv="Content-Type" content="text/html;charset=gb2312">
+<title>Web sockets test</title>
+<style type="text/css">
+.container {
+	font-family: "Courier New";
+	width: 680px;
+	height: 300px;
+	overflow: auto;
+	border: 1px solid black;
+}
 
-     .LockOff {
-         display: none; 
-         visibility: hidden; 
-      } 
+.LockOff {
+	display: none;
+	visibility: hidden;
+}
 
-      .LockOn { 
-         display: block; 
-         visibility: visible; 
-         position: absolute; 
-         z-index: 999; 
-         top: 0px; 
-         left: 0px; 
-         width: 1024%; 
-         height: 768%; 
-         background-color: #ccc; 
-         text-align: center; 
-         padding-top: 20%; 
-         filter: alpha(opacity=75); 
-         opacity: 0.75; 
-      } 
-   </style> 
+.LockOn {
+	display: block;
+	visibility: visible;
+	position: absolute;
+	z-index: 999;
+	top: 0px;
+	left: 0px;
+	width: 1024%;
+	height: 768%;
+	background-color: #ccc;
+	text-align: center;
+	padding-top: 20%;
+	filter: alpha(opacity = 75);
+	opacity: 0.75;
+}
+</style>
 
-    <script src="jquery-min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      var ws;
-      var SocketCreated = false;
-      var isUserloggedout = false;
+<script src="jquery-min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	//定义一个websocket对象
+	var ws;
+	//创建websocket连接对象，初始未建立连接
+	var SocketCreated = false;
+	//用户退出状态，初始未退出
+	var isUserloggedout = false;
+	//lockOn/lockOff 对应的skm_LockPane面板暂时可忽略
+	function lockOn(str) {
+		var lock = document.getElementById('skm_LockPane');
+		if (lock)
+			lock.className = 'LockOn';
+		lock.innerHTML = str;
+	}
 
-      function lockOn(str) 
-      { 
-         var lock = document.getElementById('skm_LockPane'); 
-         if (lock) 
-            lock.className = 'LockOn'; 
-         lock.innerHTML = str; 
-      } 
+	function lockOff() {
+		var lock = document.getElementById('skm_LockPane');
+		lock.className = 'LockOff';
+	}
+	//监听连接/断开事件
+	function ToggleConnectionClicked() {
+		//如果已建立点击按钮“断开”
+		if (SocketCreated && (ws.readyState == 0 || ws.readyState == 1)) {
+			lockOn("离开聊天室...");
+			SocketCreated = false;
+			isUserloggedout = true;
+			ws.close();
+		} else {//未建立点击按钮“连接”
+			lockOn("进入聊天室...");
+			Log("准备连接到聊天服务器 ...");
+			try {
+				//适应不同版本的浏览器
+				if ("WebSocket" in window) {
+					ws = new WebSocket("ws://"
+							+ document.getElementById("Connection").value);
+				} else if ("MozWebSocket" in window) {
+					ws = new MozWebSocket("ws://"
+							+ document.getElementById("Connection").value);
+				}
 
-      function lockOff()
-      {
-         var lock = document.getElementById('skm_LockPane'); 
-         lock.className = 'LockOff'; 
-      }
+				SocketCreated = true;
+				isUserloggedout = false;
+			} catch (ex) {
+				Log(ex, "ERROR");
+				return;
+			}
+			//连接后改变按钮内容
+			document.getElementById("ToggleConnection").innerHTML = "断开";
+			//设置websocket事件的处理程序
+			ws.onopen = WSonOpen;
+			ws.onmessage = WSonMessage;
+			ws.onclose = WSonClose;
+			ws.onerror = WSonError;
+		}
+	};
+	
+	//连接建立时触发
+	function WSonOpen() {
+		lockOff();
+		Log("连接已经建立。", "OK");
+		//建立连接显示输入发送div
+		$("#SendDataContainer").show();
+		//发送用户登录信息到服务器端
+		ws.send("login:" + document.getElementById("txtName").value);
+	};
+	
+	//客户端接收服务端数据时触发
+	function WSonMessage(event) {
+		//显示
+		Log(event.data);
+	};
+	
+	//关闭连接时触发
+	function WSonClose() {
+		lockOff();
+		//用户退出聊天室
+		if (isUserloggedout)
+			Log("【" + document.getElementById("txtName").value + "】离开了聊天室！");
+		document.getElementById("ToggleConnection").innerHTML = "连接";
+		//隐藏输入发送div
+		$("#SendDataContainer").hide();
+	};
 
-      function ToggleConnectionClicked() {
-            if (SocketCreated && (ws.readyState == 0 || ws.readyState == 1)) {
-                lockOn("离开聊天室...");  
-                SocketCreated = false;
-                isUserloggedout = true;
-                ws.close();
-            } else {
-                lockOn("进入聊天室...");  
-                Log("准备连接到聊天服务器 ...");
-                try {
-                    if ("WebSocket" in window) {
-                    	ws = new WebSocket("ws://" + document.getElementById("Connection").value);
-                    }
-                    else if("MozWebSocket" in window) {
-                    	ws = new MozWebSocket("ws://" + document.getElementById("Connection").value);
-                    }
-                    
-                    SocketCreated = true;
-                    isUserloggedout = false;
-                } catch (ex) {
-                    Log(ex, "ERROR");
-                    return;
-                }
-                document.getElementById("ToggleConnection").innerHTML = "断开";
-                ws.onopen = WSonOpen;
-                ws.onmessage = WSonMessage;
-                ws.onclose = WSonClose;
-                ws.onerror = WSonError;
-            }
-        };
+	function WSonError() {
+		lockOff();
+		//参数（消息内容，消息类型）
+		Log("远程连接中断。", "ERROR");
+	};
 
+	//使用连接发送数据
+	function SendDataClicked() {
+		//输入框不为空时发送
+		if (document.getElementById("DataToSend").value.trim() != "") {
+			//双引号是转义字符，前面要加\
+			//使用连接发送数据
+			ws.send(document.getElementById("txtName").value + "说 :\""+ document.getElementById("DataToSend").value + "\"");
+			//发送完清空输入栏
+			document.getElementById("DataToSend").value = "";
+		}
+	};
 
-        function WSonOpen() {
-            lockOff();
-            Log("连接已经建立。", "OK");
-            $("#SendDataContainer").show();
-   			    ws.send("login:" + document.getElementById("txtName").value);
-        };
+	function Log(Text, MessageType) {
+		//正确消息 绿色字体
+		if (MessageType == "OK")
+			Text = "<span style='color: green;'>" + Text + "</span>";
+		//错误消息  红色字体
+		if (MessageType == "ERROR")
+			Text = "<span style='color: red;'>" + Text + "</span>";
+			//拼接消息至聊天框
+		document.getElementById("LogContainer").innerHTML = document
+				.getElementById("LogContainer").innerHTML
+				+ Text + "<br />";
+		var LogContainer = document.getElementById("LogContainer");
+		//设置滚动条顶部高度
+		LogContainer.scrollTop = LogContainer.scrollHeight;
+	};
 
-        function WSonMessage(event) {
-            Log(event.data);            
-        };
+	$(document)
+			.ready(//文档加载后激活函数
+					function() {
+						//判断浏览器是否支持
+						$("#SendDataContainer").hide();
+						var WebSocketsExist = true;
+						try {
+							var dummy = new WebSocket(
+									"ws://localhost:8989/test");
+						} catch (ex) {
+							try {
+								webSocket = new MozWebSocket(
+										"ws://localhost:8989/test");
+							} catch (ex) {
+								//不支持，创建失败
+								WebSocketsExist = false;
+							}
+						}
+						
+						if (WebSocketsExist) {
+							//显示默认地址
+							Log("您的浏览器支持WebSocket. 您可以尝试连接到聊天服务器!", "OK");
+							document.getElementById("Connection").value = "192.168.137.1:4141/chat";
+						} else {
+							Log("您的浏览器不支持WebSocket。请选择其他的浏览器再尝试连接服务器。", "ERROR");
+							document.getElementById("ToggleConnection").disabled = true;
+						}
 
-        function WSonClose() {
-            lockOff();
-            if (isUserloggedout)
-                Log("【"+document.getElementById("txtName").value+"】离开了聊天室！");
-            document.getElementById("ToggleConnection").innerHTML = "连接";
-            $("#SendDataContainer").hide();
-        };
-
-        function WSonError() {
-            lockOff();
-            Log("远程连接中断。", "ERROR");
-        };
-
-
-        function SendDataClicked() {
-            if (document.getElementById("DataToSend").value.trim() != "") {
-                ws.send(document.getElementById("txtName").value + "说 :\"" + document.getElementById("DataToSend").value + "\"");
-                document.getElementById("DataToSend").value = "";
-            }
-        };
-
-
-        function Log(Text, MessageType) {
-            if (MessageType == "OK") Text = "<span style='color: green;'>" + Text + "</span>";
-            if (MessageType == "ERROR") Text = "<span style='color: red;'>" + Text + "</span>";
-            document.getElementById("LogContainer").innerHTML = document.getElementById("LogContainer").innerHTML + Text + "<br />";
-            var LogContainer = document.getElementById("LogContainer");
-            LogContainer.scrollTop = LogContainer.scrollHeight;
-        };
-
-
-        $(document).ready(function () {
-            $("#SendDataContainer").hide();
-            var WebSocketsExist = true;
-            try {
-                var dummy = new WebSocket("ws://localhost:8989/test");
-            } catch (ex) {
-                try
-                {
-                	webSocket = new MozWebSocket("ws://localhost:8989/test");
-                }
-                catch(ex)
-                {
-                	WebSocketsExist = false;
-                }
-            }
-
-            if (WebSocketsExist) {
-                Log("您的浏览器支持WebSocket. 您可以尝试连接到聊天服务器!", "OK");
-                document.getElementById("Connection").value = "9.119.135.127:4141/chat";
-            } else {
-                Log("您的浏览器不支持WebSocket。请选择其他的浏览器再尝试连接服务器。", "ERROR");
-                document.getElementById("ToggleConnection").disabled = true;
-            }    
-            
-            $("#DataToSend").keypress(function(evt)
-            {
-            		if (evt.keyCode == 13)
-            		{
-            				$("#SendData").click();
-            				evt.preventDefault();
-            		}
-            })        
-        });
-
-    </script>
+						$("#DataToSend").keypress(function(evt) {
+							//监听按键事件
+							if (evt.keyCode == 13) {
+								//按下enter键 发送
+								$("#SendData").click();
+								evt.preventDefault();
+							}
+						})
+					});
+</script>
 </head>
 <body>
-    <div id="skm_LockPane" class="LockOff"></div>
-    <form id="form1" runat="server">
-        <h1>Web Socket 聊天室</h1>
-        <br />
-        <div>
-            按下连接按钮，会通过WebSocket发起一个到聊天浏览器的连接。
-        </div>
-        服务器地址: <input type="text" id="Connection" /> 用户名： <input type="text" id="txtName" value="黄晓安"/>
-        <button id='ToggleConnection' type="button" onclick='ToggleConnectionClicked();'>连接</button>
-        <br />
-        <br />
-        <div id='LogContainer' class='container'></div>
-        <br />
-        <div id='SendDataContainer'>
-        <input type="text" id="DataToSend" size="88" />
-        <button id='SendData' type="button" onclick='SendDataClicked();'>发送</button>
-        </div>
-        <br />
-    </form>
+	<div id="skm_LockPane" class="LockOff"></div> 
+	<form id="form1" runat="server">
+		<h1>Web Socket 聊天室</h1>
+		<br />
+		<div>按下连接按钮，会通过WebSocket发起一个到聊天浏览器的连接。</div>
+		服务器地址: <input type="text" id="Connection" /> 用户名： <input type="text"
+			id="txtName" value="黄晓安" />
+		<button id='ToggleConnection' type="button"
+			onclick='ToggleConnectionClicked();'>连接</button>
+		<br /> <br />
+		<div id='LogContainer' class='container'></div>
+		<br />
+		<div id='SendDataContainer'>
+			<input type="text" id="DataToSend" size="88" />
+			<button id='SendData' type="button" onclick='SendDataClicked();'>发送</button>
+		</div>
+		<br />
+	</form>
 </body>
 </html>
 
