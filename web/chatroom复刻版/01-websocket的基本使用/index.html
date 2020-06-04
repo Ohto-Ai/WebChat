@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* div{
+            width:200px;
+            height:200px;
+            border:1px solid;
+        } */
+    </style>
+</head>
+<body>
+    <!-- 消息内容 -->
+    <input type="text" placeholder="输入你的内容">
+    <!-- 发送请求 -->
+    <button>发送请求</button>
+    <!-- 接受内容 -->
+    <div></div>
+    <script>
+        var input = document.querySelector('input')
+        var button = document.querySelector('button')
+        var div = document.querySelector('div')
+        //直接使用websocket的API
+        //创建websocket
+        // var socket = new WebSocket('ws://echo.websocket.org')
+        var socket = new WebSocket('ws://localhost:3000')
+         
+        //建立连接触发
+        socket.addEventListener('open',function(){
+            div.innerHTML = "连接成功"
+        })
+
+        //主动给websocket服务发送消息
+        button.addEventListener('click',function(){
+            var value = input.value
+            socket.send(value)
+            //清空输入框
+            input.value =''
+        })
+
+        //接收来自websocket服务端发送来的数据触发 精妙
+        socket.addEventListener('message', function(e) {
+            console.log(e.data)
+            //创建一个div元素
+            var dv = document.createElement('div') 
+            //把消息内容赋给dv内容
+            dv.innerText = e.data
+            //给div添加一个子元素dv
+            div.appendChild(dv)
+        })
+
+        //断开连接触发 socket.close()
+        //产生异常触发 socket.error()
+
+    </script>
+</body>
+</html>
