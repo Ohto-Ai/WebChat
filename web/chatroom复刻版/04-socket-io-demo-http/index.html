@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    哈哈
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        //连接socket服务
+        //参数1:服务器地址var
+        var socket = io('http://localhost:3000')
+        
+        // //接收服务器返回的数据
+        // socket.on('send',data =>{
+        //     console.log(data)
+        // })
+        
+        //参数一 ：触发的事件名
+        //参数二 ：传过去的数据 ，参数
+        socket.emit('hehe',{
+            name:'zs',
+            age: '18'
+        })
+
+        socket.on('send',data => {
+            console.log(data)
+        })
+    </script>
+</body>
+</html>
