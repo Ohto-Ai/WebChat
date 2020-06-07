@@ -5,13 +5,16 @@
 
 #### 软件架构
 软件架构说明
-基于Nodejs平台的web开发框架--Express
+基于Nodejs平台的web开发框架--Express/Socket.io
 
 相关资料
 websocket协议（全双工通信，HTML支持
 	           过程：握手->长连接->分手
 	           与http协议ajax技术相比，传输效率更高，性能消耗更小）
 nodejs-websocket包（yarn/npm导入）
+nodejs-socket.io包
+nodejs-express包
+
 服务端/客户端 双端开发模式
 
 #### 安装教程
