@@ -23,6 +23,11 @@
         var input = document.querySelector('input')
         var button = document.querySelector('button')
         var div = document.querySelector('div')
+
+        const TYPE_ENTER = 0;
+        const TYPE_LEAVE = 1;
+        const TYPE_MSG = 2;
+
         //直接使用websocket的API
         //创建websocket
         // var socket = new WebSocket('ws://echo.websocket.org')
@@ -43,11 +48,20 @@
 
         //接收来自websocket服务端发送来的数据触发 精妙
         socket.addEventListener('message', function(e) {
-            console.log(e.data)
+            //解析格式为JSON
+            var data = JSON.parse(e.data)
             //创建一个div元素
             var dv = document.createElement('div') 
             //把消息内容赋给dv内容
-            dv.innerText = e.data
+            dv.innerText = data.msg + '-----' + data.time
+            //按消息类型设置不用字体颜色样式
+            if(data.type === TYPE_ENTER) {
+                dv.style.color = 'green'
+            }else if(data.type === TYPE_LEAVE) {
+                dv.style.color = 'red'
+            }else{
+                dv.style.color = 'blue'
+            }
             //给div添加一个子元素dv
             div.appendChild(dv)
         })
