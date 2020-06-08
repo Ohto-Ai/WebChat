@@ -5,37 +5,56 @@
     1.连接socket io服务
 */
 var socket = io('http://localhost:3000')
-var username,avatar
+var username,avatar,password,sex
 /*
     2.登录功能
 */
-$('#login_avatar li').on('click',function() {
-    $(this)
-    .addClass('now')
-    .siblings()
-    .removeClass('now')
-})
+
 //点击按钮登录
 $('#loginBtn').on('click',function() {
     // 获取用户名
-    username = $("#username")
-      .val()
-      .trim()
+    username = $("#username").val().trim()
+    password = $('#password').val().trim()
     if(!username) {
         alert('请输入用户名')
         return
+    }else if(!password) {
+      alert('请输入密码')
+      return
     }
-    // 获取选择头像
-    //这里的.now很精妙 既加了边框，醒目 又可以通过它来找到所选的头像
-    //attr 获取属性
-    avatar = $('#login_avatar li.now img').attr('src')
-    // console.log(username,avatar)
+    // // 获取选择头像
+    // //这里的.now很精妙 既加了边框，醒目 又可以通过它来找到所选的头像
+    // //attr 获取属性
+    // avatar = $('#login_avatar li.now img').attr('src')
+    // // console.log(username,avatar)
 
-    // 需要告诉socket io服务，登录
-    socket.emit('login',{
-        username: username,
-        avatar: avatar
-    }) 
+    //需要告诉服务器用户名和密码，让其验证
+    socket.emit('checkoutLogin',{
+      username: username,
+      password: password
+    })
+
+    //接受返回查询结果
+    socket.emit('checkoutAnswer',data => {
+      if(data.msg === '用户名不存在') {  
+         //用户名不存在
+        alert('此用户不存在')
+      }else if(data.msg === '用户密码正确'){
+         //跳转到聊天室
+         $('.login_box').fadeOut()
+         $('.container').fadeIn()
+         // 需要告诉socket io服务，登录
+            socket.emit('login',{
+            username: username,
+            avatar: avatar
+        }) 
+      } else if(data.msg === '用户密码错误'){
+        //密码错误
+        alert('密码输入错误，请重新输入')
+        return
+      }
+    })
+
 
 })
 
@@ -58,6 +77,7 @@ socket.on('loginSuccess', data => {
     avatar = data.avatar
 
 })
+
 
 //监听添加用户的消息
 socket.on('addUser',data => {
@@ -366,3 +386,66 @@ $('.face').on('click',function() {
 //   let url = 'localhost:3000' 
 //   socket.emit('webshot',url)
 // })
+
+
+/*
+  注册功能
+*/
+
+//选择头像
+$('#register_avatar li').on('click',function() {
+  $(this)
+  .addClass('now')
+  .siblings()
+  .removeClass('now')
+})
+//跳转注册页
+$('#registerBtn').on('click',function() {
+    // 需要显示注册窗口 淡入效果
+    // 需要隐藏登陆窗口 淡出效果
+    $('.login_box').fadeOut()
+    $('.register_box').fadeIn()
+})
+
+//注册
+$('#register').on('click',function() {
+
+  //获取用户信息
+  username = $('#register_username').val().trim()
+  password = $('#register_password').val().trim()
+  sex = $('#sex input[name=sex]:checked').val();
+  avatar = $('#register_avatar li.now img').attr('src')
+  console.log(username,password,sex,avatar)
+
+  if(!username||!password||!sex||!avatar) {
+    alert('请填写完整信息后再提交!')
+    return
+  }
+  //提交用户信息到服务端
+  socket.emit('registerUser',{
+      username: username,
+      password: password,
+      sex: sex,
+      avatar: avatar
+  })
+
+})
+
+//监听注册失败的请求 先不写
+// socket.on('registerError',function() {
+//   alert('此用户名已被注册，请您更换一个')
+// })
+
+//监听注册成功的请求
+socket.on('registerSuccess', function() {
+  alert('注册成功!')
+})
+
+//在注册页登录
+$('#register_login').on('click', function() {
+      // 需要告诉socket io服务，登录
+      socket.emit('login',{
+        username: username,
+        avatar: avatar
+      }) 
+})
