@@ -28,35 +28,38 @@ $('#loginBtn').on('click',function() {
     // avatar = $('#login_avatar li.now img').attr('src')
     // // console.log(username,avatar)
 
+    console.log(username,password)
     //需要告诉服务器用户名和密码，让其验证
     socket.emit('checkoutLogin',{
       username: username,
       password: password
     })
 
-    //接受返回查询结果
-    socket.emit('checkoutAnswer',data => {
-      if(data.msg === '用户名不存在') {  
-         //用户名不存在
-        alert('此用户不存在')
-      }else if(data.msg === '用户密码正确'){
-         //跳转到聊天室
-         $('.login_box').fadeOut()
-         $('.container').fadeIn()
-         // 需要告诉socket io服务，登录
-            socket.emit('login',{
-            username: username,
-            avatar: avatar
-        }) 
-      } else if(data.msg === '用户密码错误'){
-        //密码错误
-        alert('密码输入错误，请重新输入')
-        return
-      }
-    })
-
-
 })
+
+//接受返回查询结果
+socket.on('checkoutAnswer',data => {
+  console.log(data.msg)
+  if(data.msg === '用户名不存在') {  
+     //用户名不存在
+    alert('此用户不存在')
+  }else if(data.msg === '用户密码正确'){
+     //跳转到聊天室
+     $('.login_box').fadeOut()
+     $('.container').fadeIn()
+     // 需要告诉socket io服务，登录
+     //这里的头像需要查询数据库获取
+        socket.emit('login',{
+        username: username,
+        avatar: avatar
+    }) 
+  } else if(data.msg === '用户密码错误'){
+    //密码错误
+    alert('密码输入错误，请重新输入')
+    return
+  }
+})
+
 
 //监听登陆失败的请求
 socket.on('loginError', data => {

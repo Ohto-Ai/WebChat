@@ -45,26 +45,30 @@ io.on('connection', function(socket) {
         console.log(sql)
         connection.query(sql,function (err, result) {
             if(err){
-              console.log('[SELECT ERROR] - ',err.message);
+            //   console.log('[SELECT ERROR] - ',err.message);
             //   socket.emit('checkoutAnswer',{
             //       msg: '用户名不存在'
             //   })
-              return
+            console.log('数据库错误')
+              throw error
+              
             }
           //输出查询到的密码
         //   console.log(result)
+        console.log(result[0].password,data.password)
            if(result[0].password === data.password){
+               console.log('1')
                socket.emit('checkoutAnswer',{
                 msg:'用户密码正确'
             })
            } else{
+               console.log('0')
                socket.emit('checkoutAnswer',{
                 msg:'用户密码错误'
                })
              }
            
         })
-        // console.log(data.password)
         connection.end()
     })
     socket.on('login',data => {
