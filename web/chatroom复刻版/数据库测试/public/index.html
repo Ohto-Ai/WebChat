@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>测试</title>
+</head>
+<body>
+  <form>
+    姓名: <input type="text" name="user" id="user">  <br>
+    密码: <input type="text" name="password" id="pwd">
+  </form>
+  <button onclick="submit()">submit</button>
+
+  <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <script type="text/javascript">
+    function submit(){
+      var qdata = {
+          "UserId": $('#user').val(),
+          "pwd": $('#pwd').val()
+          };
+            console.log(qdata)
+      $.ajax({
+        url:'http://192.168.1.202:8010/base/modify',
+        dataType:'json',
+        type:'POST',
+        data: qdata,
+        //contentType:"application/json",
+        success: function(result){
+          console.log(result)
+
+        },
+        error:(error)=>{
+          console.log(error)
+        }
+      })      
+    }
+  </script>
+</body>
+</html>

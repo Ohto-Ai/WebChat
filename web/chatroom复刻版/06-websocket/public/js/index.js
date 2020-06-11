@@ -51,7 +51,7 @@ socket.on('checkoutAnswer',data => {
      //这里的头像需要查询数据库获取
         socket.emit('login',{
         username: username,
-        avatar: avatar
+        avatar: 'images/avatar01.jpg'
     }) 
   } else if(data.msg === '用户密码错误'){
     //密码错误
