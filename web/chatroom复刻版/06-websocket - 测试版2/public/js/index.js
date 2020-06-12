@@ -15,11 +15,8 @@ $('#loginBtn').on('click', function () {
   // 获取用户名
   username = $("#username").val().trim()
   password = $('#password').val().trim()
-  if (!username) {
-    alert('请输入用户名')
-    return
-  } else if (!password) {
-    alert('请输入密码')
+  if (!username||!password) {
+    alert('用户名或密码未填写，请填写完成再登陆')
     return
   }
   // // 获取选择头像
@@ -141,7 +138,7 @@ $('#btn-send').on('click', function () {
     content: content,
     username: username,
     avatar: avatar,
-    type:'html'
+    type: 'html'
   }
   //发送给服务器
   socket.emit('sendMessage', message)
@@ -206,7 +203,7 @@ $('#file').on('change', function () {
       username: username,
       avatar: avatar,
       img: fr.result,
-      type:'image'
+      type: 'image'
     })
   }
 })
@@ -420,7 +417,6 @@ $('#registerBtn').on('click', function () {
 
 //注册
 $('#register').on('click', function () {
-
   //获取用户信息
   username = $('#register_username').val().trim()
   password = $('#register_password').val().trim()
@@ -450,13 +446,14 @@ socket.on('registerError', function () {
 //监听注册成功的请求
 socket.on('registerSuccess', function () {
   alert('注册成功!')
-})
 
-//在注册页登录
-$('#register_login').on('click', function () {
-  // 需要告诉socket io服务，登录
-  socket.emit('login', {
-    username: username,
-    avatar: avatar
+  //在注册页登录
+  $('#register_login').on('click', function () {
+    // 需要告诉socket io服务，登录
+    socket.emit('login', {
+      username: username,
+      avatar: avatar
+    })
   })
+
 })
