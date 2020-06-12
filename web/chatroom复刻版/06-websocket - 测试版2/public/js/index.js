@@ -141,6 +141,7 @@ $('#btn-send').on('click', function () {
     content: content,
     username: username,
     avatar: avatar,
+    type:'html'
   }
   //发送给服务器
   socket.emit('sendMessage', message)
@@ -158,6 +159,7 @@ socket.on('receiveMessage', data => {
         <div class="my message">
           <img class="avatar" src="${avatar}" alt="" />
           <div class="content">
+            <div style="margin-bottom: 3px;margin-right: 3px;font-size: 12px;color: #4f4f4f;">${data.time}</div>
             <div class="bubble">
               <div class="bubble_cont">${data.content}</div>
             </div>
@@ -172,7 +174,7 @@ socket.on('receiveMessage', data => {
             <div class="other message">
               <img class="avatar" src="${data.avatar}" alt="" />
               <div class="content">
-                <div class="nickname">${data.username}</div>
+                <div class="nickname">${data.username} <span>${data.time}</span></div>
                 <div class="bubble">
                   <div class="bubble_cont">${data.content}</div>
                 </div>
@@ -203,7 +205,8 @@ $('#file').on('change', function () {
     socket.emit('sendImage', {
       username: username,
       avatar: avatar,
-      img: fr.result
+      img: fr.result,
+      type:'image'
     })
   }
 })
@@ -218,9 +221,10 @@ socket.on('receiveImage', data => {
       <div class="my message">
         <img class="avatar" src="${data.avatar}" alt="" />
         <div class="content">
+          <div style="margin-bottom: 3px;margin-right: 3px;font-size: 12px;color: #4f4f4f;">${data.time}</div>
           <div class="bubble">
             <div class="bubble_cont">
-              <img src="${data.img}"/>
+              <img src="${data.content}"/>
             </div>
           </div>
         </div>
@@ -234,10 +238,10 @@ socket.on('receiveImage', data => {
           <div class="other message">
             <img class="avatar" src="${data.avatar}" alt="" />
             <div class="content">
-              <div class="nickname">${data.username}</div>
+            <div class="nickname">${data.username} <span>${data.time}</span></div>
               <div class="bubble">
                 <div class="bubble_cont">
-                  <img src="${data.img}"/>
+                  <img src="${data.content}"/>
                 </div>
               </div>
             </div>

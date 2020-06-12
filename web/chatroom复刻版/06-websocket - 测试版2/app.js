@@ -39,13 +39,18 @@ function initMessage(socket) {
         // console.log(r)
         // console.log(r[0])
         for (var i = 0; i < res.length; i++) {
+            // console.log(res[i])
+            if(res[i].type ==='image') {
+                //广播给当前进入聊天室的用户
+            socket.emit('receiveImage', res[i])
+            console.log('历史消息：')
             console.log(res[i])
-            
-            //广播给当前进入聊天室的用户
+            }else{
+                //广播给当前进入聊天室的用户
             socket.emit('receiveMessage', res[i])
             console.log('历史消息：')
             console.log(res[i])
-
+            }
 
         }
     })
@@ -148,22 +153,39 @@ io.on('connection', function (socket) {
             username: data.username,
             content: data.content,
             time: time,
-            avatar:data.avatar
+            avatar:data.avatar,
+            type: data.type
         }
         db.insertData('message', saveData, (e, r) => {
             console.log('消息存入成功')
             id_now++
         })
         console.log('聊天消息')
-        console.log(data)
+        console.log(saveData)
         //广播给所有用户
-        io.emit('receiveMessage', data)
+        io.emit('receiveMessage', saveData)
     })
 
-    //接受图片的信息
+    //接受图片的信息 
+    // 由于图片所占内存过大，为节省数据库空间，可以不做处理
     socket.on('sendImage', data => {
+        var time = chinaTime('YY/MM/DD HH:mm')
+        let saveData = {
+            id: id_now,
+            username: data.username,
+            content: data.img,
+            time: time,
+            avatar:data.avatar,
+            type: data.type
+        }
+        db.insertData('message', saveData, (e, r) => {
+            console.log('消息存入成功')
+            id_now++
+        })
+        console.log('聊天消息')
+        console.log(saveData)
         //广播给所有用户
-        io.emit('receiveImage', data)
+        io.emit('receiveImage', saveData)
     })
 
     // //实现截图功能
