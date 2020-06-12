@@ -27,21 +27,37 @@ app.get('/', function (req, res) {
     res.redirect('/index.html')
 })
 
-db.selectAll('select count(*) as sum from message',(e,r) =>{
+db.selectAll('select count(*) as sum from message', (e, r) => {
     //id 按照消息发送的先后顺序递增
-    console.log(r[0].sum)
+    console.log('数据库共有' + r[0].sum + '条历史消息记录')
     id_now = r[0].sum + 1
-}) 
-
-//一进入聊天室就加载信息
-db.selectAll('select * from message order by id desc',(e,r) => {
-    console.log(r)
-    console.log(r[0])
 })
-//     //广播给所有用户
-// io.emit('receiveMessage', data)
+
+//一进入聊天室就加载信息 传个socket对象
+function initMessage(socket) {
+    db.selectAll('select * from message order by id asc', (e, res) => {
+        // console.log(r)
+        // console.log(r[0])
+        for (var i = 0; i < res.length; i++) {
+            console.log(res[i])
+            
+            //广播给当前进入聊天室的用户
+            socket.emit('receiveMessage', res[i])
+            console.log('历史消息：')
+            console.log(res[i])
 
 
+        }
+    })
+}
+
+
+
+/*
+    此处有个bug，如果用户没通过验证，就会显示一名undefined用户离开了聊天室，因为它connection了
+    已修复 解决方案：disconnect的时候不当他是位用户 
+    另一种不好的思路：在客户端连接数据库判断，这样暴露安全隐患
+ */
 io.on('connection', function (socket) {
 
     socket.on('checkoutLogin', data => {
@@ -101,12 +117,15 @@ io.on('connection', function (socket) {
             //告诉所有用户，当前聊天室用户列表以及数量
             io.emit('userList', users)
 
+            //一进入聊天室就加载信息
+            initMessage(socket)
         }
     })
 
     //用户断开连接功能
     //监听用户断开连接
     socket.on('disconnect', () => {
+        if(socket.username == 'undefined') return
         //把当前用户信息从user中删除
         let idx = users.findIndex(item => item.username === socket.username)
         //删除掉断开连接的人
@@ -127,13 +146,16 @@ io.on('connection', function (socket) {
         let saveData = {
             id: id_now,
             username: data.username,
-            content: data.msg,
-            time: time
+            content: data.content,
+            time: time,
+            avatar:data.avatar
         }
         db.insertData('message', saveData, (e, r) => {
             console.log('消息存入成功')
             id_now++
         })
+        console.log('聊天消息')
+        console.log(data)
         //广播给所有用户
         io.emit('receiveMessage', data)
     })

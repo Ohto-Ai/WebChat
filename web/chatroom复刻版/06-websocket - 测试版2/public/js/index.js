@@ -138,7 +138,7 @@ $('#btn-send').on('click', function () {
   if (!content) return alert('请输入内容')
 
   let message = {
-    msg: content,
+    content: content,
     username: username,
     avatar: avatar,
   }
@@ -149,16 +149,17 @@ $('#btn-send').on('click', function () {
 
 //监听聊天的消息
 socket.on('receiveMessage', data => {
+  console.log(data)
   //把接收到的消息显示到聊天窗口中
   if (data.username === username) {
     //自己的消息
     $('.box-bd').append(`
       <div class="message-box">
         <div class="my message">
-          <img class="avatar" src="${data.avatar}" alt="" />
+          <img class="avatar" src="${avatar}" alt="" />
           <div class="content">
             <div class="bubble">
-              <div class="bubble_cont">${data.msg}</div>
+              <div class="bubble_cont">${data.content}</div>
             </div>
           </div>
         </div>
@@ -173,7 +174,7 @@ socket.on('receiveMessage', data => {
               <div class="content">
                 <div class="nickname">${data.username}</div>
                 <div class="bubble">
-                  <div class="bubble_cont">${data.msg}</div>
+                  <div class="bubble_cont">${data.content}</div>
                 </div>
               </div>
             </div>
