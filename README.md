@@ -34,7 +34,8 @@ nodejs-express包
 
 #### 使用说明
 
-1.  使用node命令运行app.js
+1.  使用node命令在终端(也就是命令行，最好是在某一个ide的终端中)
+    运行app.js文件 (node app.js)
 2.  在浏览器输入相应的地址：IP+端口
 3.  注册登录进入聊天系统
 
