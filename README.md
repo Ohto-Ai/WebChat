@@ -10,7 +10,7 @@
 基于Nodejs平台的web开发框架--Express/Socket.io
 
 #### 各部分文件介绍
-  db文件夹:config.js（配置数据库）和db.js（封装数据库操作）
+  <br>db文件夹:config.js（配置数据库）和db.js（封装数据库操作）
   node_modules文件夹:node库，如果想要运行的话有些库包得自己重新下，因为作者有些包库是全局配置的；
   public文件夹：前端网页，客户端，服务器端的静态资源
   app.js:服务端 nodejs（Express/Socket.io框架）实现
