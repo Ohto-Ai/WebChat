@@ -30,7 +30,9 @@ nodejs-express包
 1.  nodejs
 2.  eclipse
 3.  git
-4.vscode
+4.  vscode
+5.  mysql数据库配置，导入/数据库/websocket.sql文件 
+
 
 #### 使用说明
 
@@ -46,7 +48,7 @@ nodejs-express包
 4.Cannot Get（404） 解决：引入path路径
 5.数据库执行异常 解决：使用回调函数callback及最好封装数据库操作
 
-﻿@[TOC](本文目录)
+﻿
 
 # 项目介绍
 
