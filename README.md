@@ -45,3 +45,59 @@ nodejs-express包
 3.nodejs无法启动 解决：重装
 4.Cannot Get（404） 解决：引入path路径
 5.数据库执行异常 解决：使用回调函数callback及最好封装数据库操作
+
+﻿@[TOC](本文目录)
+
+# 项目介绍
+
+由于WEB的易用性、实用性，它很快占据了主导地位，目前成为使用最广泛、最有前途、最具魅力的信息传播技术。本次实验就就基于web技术对社交网站开发的初步探索。本次课程设计内容为仿微信网页版Web即时聊天系统。
+实现Web的多对多即时的文本消息聊天功能。
+实现Web的表情的发送、接收和显示功能。
+实现Web的图片的发送、接收和显示功能。
+实现本地消息的存储，在离线的时候也能加载和查看历史消息；
+要求使用WebSocket；
+
+# 目录结构
+
+![目录结构](https://img-blog.csdnimg.cn/20210325120640129.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzgyNzM3Ng==,size_16,color_FFFFFF,t_70)
+项目采用html+css+js+nodejs+mysql开发。 
+
+基于Nodejs平台的web开发框架--Express/Socket.io
+
+文件目录
+
+>app.js nodejs编写的后端程序
+
+>db 封装的数据库操作
+
+>node_modules 模块依赖
+
+>public 静态资源，即前端三大件
+
+>.json 配置文件，不用管
+
+# 效果展示
+
+![登录界面](https://img-blog.csdnimg.cn/20210325121435992.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzgyNzM3Ng==,size_16,color_FFFFFF,t_70)
+![注册界面](https://img-blog.csdnimg.cn/20210325121458130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzgyNzM3Ng==,size_16,color_FFFFFF,t_70)
+
+![用户1聊天室界面](https://img-blog.csdnimg.cn/20210325121329514.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzgyNzM3Ng==,size_16,color_FFFFFF,t_70)
+![用户2聊天室界面](https://img-blog.csdnimg.cn/2021032512134867.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzgyNzM3Ng==,size_16,color_FFFFFF,t_70)
+
+# 数据库设计
+
+数据库比较简单，就两张表，用户信息表和聊天信息表。
+![数据库](https://img-blog.csdnimg.cn/20210325121556516.png)
+![message表](https://img-blog.csdnimg.cn/2021032512162651.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzgyNzM3Ng==,size_16,color_FFFFFF,t_70)
+![userinformation表](https://img-blog.csdnimg.cn/20210325121722528.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzgyNzM3Ng==,size_16,color_FFFFFF,t_70)
+
+# 源码地址
+
+[gitee仓库地址，开源不易，欢迎star](https://gitee.com/hebugui/web_qqchating.git)
+![gitee](https://img-blog.csdnimg.cn/20210325122522515.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzgyNzM3Ng==,size_16,color_FFFFFF,t_70)
+
+# 项目总结
+
+做这个项目之前，我没有接触过nodejs，后来发现使用了它非常方便，语法贴近js比较好学，功能又很强大，很多封装好的模块。
+
+这个项目我的后续计划是把它部署到阿里云上，正在尝试中。之前弄过一次失败了，所以准备重新搞一下。这个项目是大三下学期整理的，课设是大二下做的，感觉也是对自己学习的一种总结吧，记录自己学习的心路历程。
