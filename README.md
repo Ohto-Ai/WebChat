@@ -56,11 +56,11 @@ websocket协议（全双工通信，HTML支持
 
 
 本次项目遇到的问题集锦：
-1.服务器连接中断 原因：app.js代码执行失败
-2.npm执行失败 解决：安装包repair
-3.nodejs无法启动 解决：重装
-4.Cannot Get（404） 解决：引入path路径
-5.数据库执行异常 解决：使用回调函数callback及最好封装数据库操作
+1.  服务器连接中断 原因：app.js代码执行失败
+2.  npm执行失败 解决：安装包repair
+3.  nodejs无法启动 解决：重装
+4.  Cannot Get（404） 解决：引入path路径
+5.  数据库执行异常 解决：使用回调函数callback及最好封装数据库操作
 
 ﻿
 
