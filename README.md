@@ -10,19 +10,19 @@
 基于Nodejs平台的web开发框架--Express/Socket.io
 
 #### 各部分文件介绍
-  <br>db文件夹:config.js（配置数据库）和db.js（封装数据库操作）
-  node_modules文件夹:node库，如果想要运行的话有些库包得自己重新下，因为作者有些包库是全局配置的；
-  public文件夹：前端网页，客户端，服务器端的静态资源
-  app.js:服务端 nodejs（Express/Socket.io框架）实现
-  README.md:项目说明
+db文件夹:config.js（配置数据库）和db.js（封装数据库操作）
+<br>node_modules文件夹:node库，如果想要运行的话有些库包得自己重新下，因为作者有些包库是全局配置的；
+<br>public文件夹：前端网页，客户端，服务器端的静态资源
+<br>app.js:服务端 nodejs（Express/Socket.io框架）实现
+<br>README.md:项目说明
 
 相关资料
 websocket协议（全双工通信，HTML支持
-	           过程：握手->长连接->分手
-	           与http协议ajax技术相比，传输效率更高，性能消耗更小）
-  nodejs-websocket包（yarn/npm导入）
-  nodejs-socket.io包
-  nodejs-express包
+	         <br>过程：握手->长连接->分手
+	         <br>与http协议ajax技术相比，传输效率更高，性能消耗更小）
+<br>nodejs-websocket包（yarn/npm导入）
+<br>nodejs-socket.io包
+<br>nodejs-express包
 
 服务端/客户端 双端开发模式
 
